@@ -1,0 +1,80 @@
+Compiling GNU 4.8.1 on CentOS 6
+ 
+ 
+ 
+ 
+ 
+ 
+2 Votes
+
+
+I encountered error when compiling GCC 4.8.1 on CentOS 6 I have the prequistics (via yum installed)
+
+    gmp 4.3.1-7.el6_2.2
+    mpfr  2.4.1-6.el6
+    mpc 0.19-1.el6.rf
+
+But still I enountered the error
+
+configure: error: Building GCC requires GMP 4.2+, MPFR 2.4.0+ and MPC 0.8.0+. 
+Try the --with-gmp, --with-mpfr and/or --with-mpc options to specify their locations.  
+Source code for these libraries can be found at their respective hosting sites as well as 
+at ftp://gcc.gnu.org/pub/gcc/infrastructure/
+
+To resolve the issue, download from the ftp://gcc.gnu.org/pub/gcc/infrastructure/ the following application and compile them.
+
+    gmp-4.3.2.tar.bz2
+    mpfr-2.4.2.tar.bz2
+    mpc-0.8.1.tar.gz
+
+1. Install gmp-4.3.2
+
+# bunzip2 gmp-4.3.2.tar.bz2
+# tar -zxvf gmp-4.3.2.tar
+# cd gmp-4.3.2
+# ./configure --prefix=/usr/local/gmp-4.3.2
+# make
+# make install
+
+2. Install mpfr-2.4.2 (requires gmp-4.3.2 as prerequisites)
+
+# bunzip2 mpfr-2.4.2.tar.bz2
+# tar -zxvf mpfr-2.4.2.tar
+# cd mpfr-2.4.2
+# ./configure --prefix=/usr/local/mpfr-2.4.2 --with-gmp=/usr/local/gmp-4.3.2/
+# make
+# make install
+
+3. Install mpc-0.8.1 (requires gmp-4.3.2 and mpfr-2.4.2 as prerequisites )
+
+# tar -zxvf mpc-0.8.1.tar.gz
+# cd mpc-0.8.1
+#./configure --prefix=/usr/local/mpc-0.8.1/ --with-gmp=/usr/local/gmp-4.3.2/ --with-mpfr=/usr/local/mpfr-2.4.2
+# make
+# make install
+
+4. Update your LD_LIBRARY_PATH reflect /usr/local/mpc-0.8.1/lib In your .bash_profile include the following
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/mpc-0.8.1
+
+5. Install the glibc-devel.i686. For more information, do look at Error when compiling GCC 4.8.1 (linuxtoolkit.blogspot.com)
+6. Finally install GNU CC 4.8.1
+
+# tar -zxvf  gcc-4.8.1.tar.gz
+# cd gcc-4.8.1
+# mkdir build-gcc
+# cd build-gcc
+# ../configure --prefix=/usr/local/gcc-4.8.1 --with-mpfr=/usr/local/mpfr-2.4.2 --with-mpc=/usr/local/mpc-0.8.1 --with-gmp=/usr/local/gmp-4.3.2
+# make
+# make install
+
+
+yum install libmpc-devel mpfr-devel gmp-devel
+
+cd /usr/src/
+curl ftp://ftp.mirrorservice.org/sites/sourceware.org/pub/gcc/releases/gcc-4.9.3/gcc-4.9.3.tar.bz2 -O
+tar xvfj gcc-4.9.3.tar.bz2
+cd gcc-4.9.3
+./configure --disable-multilib --enable-languages=c,c++
+make -j `grep processor /proc/cpuinfo | wc -l`
+make install
