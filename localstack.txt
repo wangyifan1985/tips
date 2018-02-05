@@ -38,6 +38,11 @@ To resolve the issue, download from the ftp://gcc.gnu.org/pub/gcc/infrastructure
 
 2. Install mpfr-2.4.2 (requires gmp-4.3.2 as prerequisites)
 
+
+
+sudo yum install glibc-devel.i686
+sudo yum install libgcc.i686
+
 # bunzip2 mpfr-2.4.2.tar.bz2
 # tar -zxvf mpfr-2.4.2.tar
 # cd mpfr-2.4.2
